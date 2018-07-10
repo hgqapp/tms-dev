@@ -1,0 +1,30 @@
+[[resources-menu]]
+=== 菜单 Menu
+
+[[resources-menu-object]]
+==== 对象
+include::{snippets}/menu/object-fields.adoc[]
+
+[[resources-menu-get]]
+==== 获取
+operation::menu-get[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-menu-page]]
+==== 分页
+operation::menu-page[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-menu-list]]
+==== 列表
+operation::menu-list[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-menu-create]]
+==== 创建
+operation::menu-create[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-menu-update]]
+==== 更新
+operation::menu-update[snippets='http-url,request-parameters,http-request,response-body']
+
+[[resources-menu-delete]]
+==== 删除
+operation::menu-delete[snippets='http-url,request-parameters,http-request,response-body']

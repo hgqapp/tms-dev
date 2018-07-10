@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.user.mapper.UserDetailsModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.user.model.UserDetailsModel" >
+        <id column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="BIGINT" />
+        <result column="registration_time" property="registrationTime" jdbcType="BIGINT" />
+        <result column="registration_ip" property="registrationIp" jdbcType="VARCHAR" />
+        <result column="last_login_time" property="lastLoginTime" jdbcType="BIGINT" />
+        <result column="last_login_Ip" property="lastLoginIp" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        user_id, 
+        avatar, 
+        birthday, 
+        registration_time, 
+        registration_ip, 
+        last_login_time, 
+        last_login_Ip
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM user_details
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM user_details
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" >
+        INSERT INTO user_details (
+            user_id, 
+            avatar, 
+            birthday, 
+            registration_time, 
+            registration_ip, 
+            last_login_time, 
+            last_login_Ip
+        )
+        VALUES (
+            #{userId,jdbcType=BIGINT}, 
+            #{avatar,jdbcType=VARCHAR}, 
+            #{birthday,jdbcType=BIGINT}, 
+            #{registrationTime,jdbcType=BIGINT}, 
+            #{registrationIp,jdbcType=VARCHAR}, 
+            #{lastLoginTime,jdbcType=BIGINT}, 
+            #{lastLoginIp,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertSelective" >
+        INSERT INTO user_details
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="avatar != null" >
+                avatar,
+            </if>
+            <if test="birthday != null" >
+                birthday,
+            </if>
+            <if test="registrationTime != null" >
+                registration_time,
+            </if>
+            <if test="registrationIp != null" >
+                registration_ip,
+            </if>
+            <if test="lastLoginTime != null" >
+                last_login_time,
+            </if>
+            <if test="lastLoginIp != null" >
+                last_login_Ip,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="avatar != null" >
+                #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null" >
+                #{birthday,jdbcType=BIGINT},
+            </if>
+            <if test="registrationTime != null" >
+                #{registrationTime,jdbcType=BIGINT},
+            </if>
+            <if test="registrationIp != null" >
+                #{registrationIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null" >
+                #{lastLoginTime,jdbcType=BIGINT},
+            </if>
+            <if test="lastLoginIp != null" >
+                #{lastLoginIp,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE user_details
+        <set >
+            <if test="avatar != null" >
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null" >
+                birthday = #{birthday,jdbcType=BIGINT},
+            </if>
+            <if test="registrationTime != null" >
+                registration_time = #{registrationTime,jdbcType=BIGINT},
+            </if>
+            <if test="registrationIp != null" >
+                registration_ip = #{registrationIp,jdbcType=VARCHAR},
+            </if>
+            <if test="lastLoginTime != null" >
+                last_login_time = #{lastLoginTime,jdbcType=BIGINT},
+            </if>
+            <if test="lastLoginIp != null" >
+                last_login_Ip = #{lastLoginIp,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE user_details
+        SET avatar = #{avatar,jdbcType=VARCHAR},
+            birthday = #{birthday,jdbcType=BIGINT},
+            registration_time = #{registrationTime,jdbcType=BIGINT},
+            registration_ip = #{registrationIp,jdbcType=VARCHAR},
+            last_login_time = #{lastLoginTime,jdbcType=BIGINT},
+            last_login_Ip = #{lastLoginIp,jdbcType=VARCHAR}
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

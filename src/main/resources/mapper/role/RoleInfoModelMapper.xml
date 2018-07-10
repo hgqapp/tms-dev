@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.role.mapper.RoleInfoModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.role.model.RoleInfoModel" >
+        <id column="role_id" property="roleId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+        <result column="orders" property="orders" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        role_id, 
+        name, 
+        description, 
+        orders, 
+        create_time, 
+        update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM role_info
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getByName" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM role_info
+        WHERE name = #{name}
+        LIMIT 1
+    </select>
+
+    <select id="getMaxOrders" resultType="java.lang.Integer">
+        SELECT
+            MAX(orders)
+        FROM role_info
+    </select>
+
+    <sql id="ConditionSql">
+        <where>
+            <if test="condition != null">
+                <if test="condition.name != null and condition.name != ''">
+                    name LIKE CONCAT('%', #{condition.name}, '%')
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="OrderSql">
+        <if test="pageRequest != null">
+            <choose>
+                <when test="pageRequest.sorting != null">
+                    ORDER BY ${pageRequest.sorting}
+                </when>
+                <otherwise>
+                    ORDER BY orders DESC
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+    <sql id="PageSql">
+        <if test="pageRequest != null" >
+            LIMIT #{pageRequest.start}, #{pageRequest.pageSize}
+        </if>
+    </sql>
+
+    <select id="getTotalCountByCondition" resultType="int">
+        SELECT COUNT(*)
+        FROM role_info
+        <include refid="ConditionSql"/>
+    </select>
+
+    <select id="getPageByCondition" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn"/>
+        FROM role_info
+        <include refid="ConditionSql"/>
+        <include refid="OrderSql"/>
+        <include refid="PageSql"/>
+    </select>
+
+    <select id="getByRoleIds" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn"/>
+        FROM role_info
+        WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="getListByCondition" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn"/>
+        FROM role_info
+        <include refid="ConditionSql"/>
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM role_info
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByRoleIds">
+        DELETE FROM role_info
+        WHERE role_id IN
+        <foreach collection="roleIds" item="roleId" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="roleId" >
+        INSERT INTO role_info (
+            name, 
+            description, 
+            orders, 
+            create_time, 
+            update_time
+        )
+        VALUES (
+            #{name,jdbcType=VARCHAR}, 
+            #{description,jdbcType=VARCHAR}, 
+            #{orders,jdbcType=INTEGER}, 
+            #{createTime,jdbcType=BIGINT}, 
+            #{updateTime,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="roleId" >
+        INSERT INTO role_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="description != null" >
+                description,
+            </if>
+            <if test="orders != null" >
+                orders,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="orders != null" >
+                #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE role_info
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null" >
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="orders != null" >
+                orders = #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE role_info
+        SET name = #{name,jdbcType=VARCHAR},
+            description = #{description,jdbcType=VARCHAR},
+            orders = #{orders,jdbcType=INTEGER},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

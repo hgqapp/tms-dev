@@ -1,0 +1,30 @@
+[[resources-role]]
+=== 角色 Role
+
+[[resources-role-object]]
+==== 对象
+include::{snippets}/role/object-fields.adoc[]
+
+[[resources-role-get]]
+==== 获取
+operation::role-get[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-role-page]]
+==== 分页
+operation::role-page[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-role-list]]
+==== 列表
+operation::role-list[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-role-create]]
+==== 创建
+operation::role-create[snippets='http-url,request-parameters,response-fields,http-request,response-body']
+
+[[resources-role-update]]
+==== 更新
+operation::role-update[snippets='http-url,request-parameters,http-request,response-body']
+
+[[resources-role-delete]]
+==== 删除
+operation::role-delete[snippets='http-url,request-parameters,http-request,response-body']

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.user.mapper.UserAccountModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.user.model.UserAccountModel" >
+        <id column="account_id" property="accountId" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="account_name" property="accountName" jdbcType="VARCHAR" />
+        <result column="account_type" property="accountType" jdbcType="TINYINT" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        account_id, 
+        user_id, 
+        account_name, 
+        account_type
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM user_account
+        WHERE account_id = #{accountId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM user_account
+        WHERE account_id = #{accountId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="accountId" >
+        INSERT INTO user_account (
+            user_id, 
+            account_name, 
+            account_type
+        )
+        VALUES (
+            #{userId,jdbcType=BIGINT}, 
+            #{accountName,jdbcType=VARCHAR}, 
+            #{accountType,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="accountId" >
+        INSERT INTO user_account
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="accountName != null" >
+                account_name,
+            </if>
+            <if test="accountType != null" >
+                account_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="userId != null" >
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="accountName != null" >
+                #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountType != null" >
+                #{accountType,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE user_account
+        <set >
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="accountName != null" >
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountType != null" >
+                account_type = #{accountType,jdbcType=TINYINT},
+            </if>
+        </set>
+        WHERE account_id = #{accountId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE user_account
+        SET user_id = #{userId,jdbcType=BIGINT},
+            account_name = #{accountName,jdbcType=VARCHAR},
+            account_type = #{accountType,jdbcType=TINYINT}
+        WHERE account_id = #{accountId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

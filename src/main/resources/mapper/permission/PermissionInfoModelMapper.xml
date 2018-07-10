@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.permission.mapper.PermissionInfoModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.permission.model.PermissionInfoModel" >
+        <id column="permission_id" property="permissionId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="TINYINT" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        permission_id, 
+        name, 
+        code, 
+        type, 
+        create_time, 
+        update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM permission_info
+        WHERE permission_id = #{permissionId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getByCode" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM permission_info
+        WHERE code = #{code}
+        LIMIT 1
+    </select>
+
+    <sql id="ConditionSql">
+        <where>
+            <if test="condition != null">
+                <if test="condition.name != null and condition.name != ''">
+                    name LIKE CONCAT('%', #{condition.name}, '%')
+                </if>
+                <if test="condition.code != null and condition.code != ''">
+                    name LIKE CONCAT('%', #{condition.code}, '%')
+                </if>
+                <if test="condition.type != null">
+                    type=#{condition.type}
+                </if>
+            </if>
+        </where>
+    </sql>
+
+    <sql id="OrderSql">
+        <if test="pageRequest != null">
+            <choose>
+                <when test="pageRequest.sorting != null">
+                    ORDER BY ${pageRequest.sorting}
+                </when>
+                <otherwise>
+                    ORDER BY update_time DESC
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+    <sql id="PageSql">
+        <if test="pageRequest != null" >
+            LIMIT #{pageRequest.start}, #{pageRequest.pageSize}
+        </if>
+    </sql>
+
+    <select id="getTotalCountByCondition" resultType="int">
+        SELECT COUNT(*)
+        FROM permission_info
+        <include refid="ConditionSql"/>
+    </select>
+
+    <select id="getPageByCondition" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM permission_info
+        <include refid="ConditionSql"/>
+        <include refid="OrderSql"/>
+        <include refid="PageSql"/>
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM permission_info
+        WHERE permission_id = #{permissionId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByPermissionIds">
+        DELETE FROM permission_info
+        WHERE permission_id IN
+        <foreach collection="permissionIds" item="permissionId" open="(" close=")" separator=",">
+            #{permissionId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByPermissionIdAndType">
+        DELETE FROM permission_info
+        WHERE permission_id = #{permissionId,jdbcType=BIGINT} AND type = #{type}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="permissionId" >
+        INSERT INTO permission_info (
+            name, 
+            code, 
+            type, 
+            create_time, 
+            update_time
+        )
+        VALUES (
+            #{name,jdbcType=VARCHAR}, 
+            #{code,jdbcType=VARCHAR}, 
+            #{type,jdbcType=TINYINT}, 
+            #{createTime,jdbcType=BIGINT}, 
+            #{updateTime,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="permissionId" >
+        INSERT INTO permission_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="code != null" >
+                code,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null" >
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE permission_info
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="code != null" >
+                code = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null" >
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE permission_id = #{permissionId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE permission_info
+        SET name = #{name,jdbcType=VARCHAR},
+            code = #{code,jdbcType=VARCHAR},
+            type = #{type,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE permission_id = #{permissionId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

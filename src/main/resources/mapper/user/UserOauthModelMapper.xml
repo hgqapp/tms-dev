@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.user.mapper.UserOauthModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.user.model.UserOauthModel" >
+        <id column="oauth_id" property="oauthId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        oauth_id, 
+        name
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM user_oauth
+        WHERE oauth_id = #{oauthId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM user_oauth
+        WHERE oauth_id = #{oauthId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="oauthId" >
+        INSERT INTO user_oauth (
+            name
+        )
+        VALUES (
+            #{name,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="oauthId" >
+        INSERT INTO user_oauth
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE user_oauth
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE oauth_id = #{oauthId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE user_oauth
+        SET name = #{name,jdbcType=VARCHAR}
+        WHERE oauth_id = #{oauthId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

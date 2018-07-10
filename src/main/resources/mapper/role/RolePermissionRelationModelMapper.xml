@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.role.mapper.RolePermissionRelationModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.role.model.RolePermissionRelationModel" >
+        <id column="relation_id" property="relationId" jdbcType="BIGINT" />
+        <result column="permission_id" property="permissionId" jdbcType="BIGINT" />
+        <result column="role_id" property="roleId" jdbcType="BIGINT" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        relation_id, 
+        permission_id, 
+        role_id
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" >
+        SELECT 
+            <include refid="BaseColumn" />
+        FROM role_permission_relation
+        WHERE relation_id = #{relationId,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM role_permission_relation
+        WHERE relation_id = #{relationId,jdbcType=BIGINT}
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="relationId" >
+        INSERT INTO role_permission_relation (
+            permission_id, 
+            role_id
+        )
+        VALUES (
+            #{permissionId,jdbcType=BIGINT}, 
+            #{roleId,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="relationId" >
+        INSERT INTO role_permission_relation
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="permissionId != null" >
+                permission_id,
+            </if>
+            <if test="roleId != null" >
+                role_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="permissionId != null" >
+                #{permissionId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null" >
+                #{roleId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE role_permission_relation
+        <set >
+            <if test="permissionId != null" >
+                permission_id = #{permissionId,jdbcType=BIGINT},
+            </if>
+            <if test="roleId != null" >
+                role_id = #{roleId,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE relation_id = #{relationId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE role_permission_relation
+        SET permission_id = #{permissionId,jdbcType=BIGINT},
+            role_id = #{roleId,jdbcType=BIGINT}
+        WHERE relation_id = #{relationId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cgling.tms.menu.mapper.MenuInfoModelMapper" >
+
+    <resultMap id="BaseResultMap" type="com.cgling.tms.menu.model.MenuInfoModel" >
+        <id column="menu_id" property="menuId" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+        <result column="type" property="type" jdbcType="TINYINT" />
+        <result column="uri" property="uri" jdbcType="VARCHAR" />
+        <result column="icon" property="icon" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="orders" property="orders" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="BIGINT" />
+        <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="BaseColumn" >
+        m.menu_id,
+        m.name,
+        m.parent_id,
+        m.type,
+        m.uri,
+        m.icon,
+        m.status,
+        m.orders,
+        m.create_time,
+        m.update_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM menu_info m
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </select>
+
+    <select id="getByMenuId" resultMap="BaseResultMap">
+        SELECT 
+            <include refid="BaseColumn" />, p.code
+        FROM menu_info m, menu_permission_relation r, permission_info p
+        WHERE m.menu_id = #{menuId,jdbcType=BIGINT}
+        AND m.menu_id=r.menu_id AND r.permission_id=p.permission_id AND p.type=1
+    </select>
+
+    <sql id="ConditionSql">
+        <where>
+
+            <if test="condition != null">
+                <if test="condition.name != null and condition.name != ''">
+                    AND name LIKE CONCAT('%', #{condition.name}, '%')
+                </if>
+                <if test="condition.parentId != null">
+                    AND parent_id = #{condition.parentId}
+                </if>
+                <if test="condition.type != null">
+                    AND m.type = #{condition.type}
+                </if>
+                <if test="condition.status != null">
+                    AND status = #{condition.status}
+                </if>
+                <if test="condition.code != null and condition.code != ''">
+                    AND code LIKE CONCAT('%', #{condition.code}, '%')
+                </if>
+            </if>
+            AND m.menu_id=r.menu_id AND r.permission_id=p.permission_id AND p.type=1
+        </where>
+    </sql>
+
+    <sql id="OrderSql">
+        <if test="pageRequest != null">
+            <choose>
+                <when test="pageRequest.sorting != null">
+                    ORDER BY ${pageRequest.sorting}
+                </when>
+                <otherwise>
+                    ORDER BY orders DESC
+                </otherwise>
+            </choose>
+        </if>
+    </sql>
+
+    <sql id="PageSql">
+        <if test="pageRequest != null" >
+            LIMIT #{pageRequest.start}, #{pageRequest.pageSize}
+        </if>
+    </sql>
+
+    <select id="getListByCondition" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />, p.code
+        FROM menu_info m, menu_permission_relation r, permission_info p
+        <include refid="ConditionSql"/>
+    </select>
+
+    <select id="getTotalCountByCondition" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM menu_info m, menu_permission_relation r, permission_info p
+        <include refid="ConditionSql"/>
+    </select>
+
+    <select id="getPageByCondition" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />, p.code
+        FROM menu_info m, menu_permission_relation r, permission_info p
+        <include refid="ConditionSql"/>
+        <include refid="OrderSql"/>
+        <include refid="PageSql"/>
+    </select>
+
+    <select id="selectOneByParentIds" resultType="com.cgling.tms.menu.model.MenuInfoModel">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM menu_info m
+        WHERE parent_id IN
+        <foreach collection="parentIds" item="parentId" open="(" close=")" separator=",">
+            #{parentId}
+        </foreach>
+    </select>
+
+    <select id="getMaxOrders" resultType="int">
+        SELECT
+            MAX(orders)
+        FROM menu_info m
+    </select>
+
+    <select id="getByMenuIdAndStatus" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM menu_info m
+        WHERE menu_id = #{menuId} AND status = #{status}
+    </select>
+
+    <select id="getByName" resultMap="BaseResultMap">
+        SELECT
+            <include refid="BaseColumn" />
+        FROM menu_info m
+        WHERE name = #{name}
+        LIMIT 1
+    </select>
+
+    <delete id="deleteByPrimaryKey" >
+        DELETE FROM menu_info
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteByMenuIds">
+        DELETE FROM menu_info
+        WHERE menu_id IN
+        <foreach collection="menuIds" item="menuId" open="(" close=")" separator=",">
+            #{menuId}
+        </foreach>
+    </delete>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="menuId" >
+        INSERT INTO menu_info (
+            name, 
+            parent_id, 
+            type, 
+            uri, 
+            icon, 
+            status, 
+            orders, 
+            create_time, 
+            update_time
+        )
+        VALUES (
+            #{name,jdbcType=VARCHAR}, 
+            #{parentId,jdbcType=BIGINT}, 
+            #{type,jdbcType=TINYINT}, 
+            #{uri,jdbcType=VARCHAR}, 
+            #{icon,jdbcType=VARCHAR}, 
+            #{status,jdbcType=TINYINT}, 
+            #{orders,jdbcType=INTEGER}, 
+            #{createTime,jdbcType=BIGINT}, 
+            #{updateTime,jdbcType=BIGINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="menuId" >
+        INSERT INTO menu_info
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                name,
+            </if>
+            <if test="parentId != null" >
+                parent_id,
+            </if>
+            <if test="type != null" >
+                type,
+            </if>
+            <if test="uri != null" >
+                uri,
+            </if>
+            <if test="icon != null" >
+                icon,
+            </if>
+            <if test="status != null" >
+                status,
+            </if>
+            <if test="orders != null" >
+                orders,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="updateTime != null" >
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null" >
+                #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="type != null" >
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="uri != null" >
+                #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null" >
+                #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="orders != null" >
+                #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" >
+        UPDATE menu_info
+        <set >
+            <if test="name != null" >
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null" >
+                parent_id = #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="type != null" >
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="uri != null" >
+                uri = #{uri,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null" >
+                icon = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="orders != null" >
+                orders = #{orders,jdbcType=INTEGER},
+            </if>
+            <if test="updateTime != null" >
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKey" >
+        UPDATE menu_info
+        SET name = #{name,jdbcType=VARCHAR},
+            parent_id = #{parentId,jdbcType=BIGINT},
+            type = #{type,jdbcType=TINYINT},
+            uri = #{uri,jdbcType=VARCHAR},
+            icon = #{icon,jdbcType=VARCHAR},
+            status = #{status,jdbcType=TINYINT},
+            orders = #{orders,jdbcType=INTEGER},
+            update_time = #{updateTime,jdbcType=BIGINT}
+        WHERE menu_id = #{menuId,jdbcType=BIGINT}
+    </update>
+      
+</mapper>

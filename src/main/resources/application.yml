@@ -1,0 +1,47 @@
+debug: true
+server:
+  port: 8080
+spring:
+  application:
+    name: tms
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/tms_dev?characterEncoding=utf8
+    username: root
+    password: root
+    tomcat:
+      initial-size: 2
+      min-idle: 1
+      max-wait: 60000
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: true
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+  thymeleaf:
+    cache: false
+security:
+  basic:
+    enabled: true
+  user:
+    name: admin
+    password: 123456
+    role: ADMIN
+
+logging:
+  level:
+    root: info
+    SQL: debug
+    org.springframework.jdbc.datasource.DataSourceTransactionManager: debug
+
+mybatis:
+  type-aliases-package: com.cgling.tms.model
+  configuration:
+    log-prefix: SQL.
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+

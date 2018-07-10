@@ -1,0 +1,132 @@
+= API 文档
+作者 <309259716@qq.com>
+v1.0, 2017-12-25
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:sectlinks:
+:toc: left
+:toclevels: 3
+:toc-title: 目  录
+:operation-http-url-title: 请求URL
+:operation-http-request-title: 请求示例
+:operation-request-parameters-title: 请求参数说明
+:operation-request-fields-title: 请求字段说明
+:operation-response-fields-title: 响应字段说明
+:operation-response-body-title: 响应示例
+:operation-links-title: 相关链接
+
+[[overview]]
+== 概要
+
+API概要说明
+
+[[overview-common]]
+== 通用说明
+[[overview-common-response]]
+=== 返回结果说明
+|===
+| 属性 | 类型 | 说明
+
+| code
+| Integer
+| 状态码
+
+| status
+| Integer
+| code对应的短语
+
+| message
+| String
+| 响应附带的消息说明
+
+| data
+| Object
+| 请求的数据
+|===
+[[overview-common-response-code]]
+=== 返回状态码说明
+|===
+| 状态码 | 对应的短语 | 说明
+
+| 200
+| Ok
+| 请求成功
+
+| 400
+| Bad Request
+| 请求语法错误
+
+| 401
+| Unauthorized
+| 用户验证信息无效
+
+| 402
+| Session Timeout
+| 登陆会话超时
+
+| 403
+| Forbidden
+| 禁止访问，例如：功能权限不足
+
+| 404
+| Not Found
+| 请求资源不存在
+
+| 406
+| Not Acceptable
+| 无法完成的请求，例如：数据权限不足
+
+| 422
+| Unprocessable Entity
+| 无法处理的请求体，例如：请求参数语义错误
+
+| 500
+| Internal Server Error
+| 服务器内部错误
+
+|===
+[[overview-common-page]]
+=== 分页
+[[overview-common-page-request]]
+==== 分页请求参数说明
+|===
+| 参数 | 描述
+
+| pageNumber
+| 第几页，大于0的整数，默认值：1
+
+| pageSize
+| 每页大小，大于0的整数，默认值：20
+
+| sort.property
+| 排序的属性
+
+| sort.direction
+| 排序的方式，只能是ASC或者DESC，ASC：正序；DESC：逆序
+|===
+[[overview-common-page-response]]
+==== 分页响应属性说明
+|===
+| 属性 | 类型 | 描述
+
+| totalCount
+| Integer
+| 记录总数
+
+| totalPage
+| Integer
+| 总页数
+
+| records
+| Object
+| 分页数据
+|===
+
+[[resources-notes-create]]
+== API接口
+
+include::role.adoc[]
+
+include::menu.adoc[]
